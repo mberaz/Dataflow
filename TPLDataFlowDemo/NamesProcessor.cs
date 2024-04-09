@@ -13,6 +13,8 @@ namespace TPLDataFlowDemo
     }
     public class NamesProcessor : INamesProcessor
     {
+        //https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/walkthrough-creating-a-dataflow-pipeline
+        //https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library
         private readonly IValidatorFactory _validatorFactory;
 
         public NamesProcessor(IValidatorFactory validatorFactory)
