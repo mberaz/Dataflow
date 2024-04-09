@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPLDataFlowDemo", "TPLDataFlowDemo\TPLDataFlowDemo.csproj", "{87BC6343-550D-4599-9917-EEB4820A8B82}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87BC6343-550D-4599-9917-EEB4820A8B82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87BC6343-550D-4599-9917-EEB4820A8B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87BC6343-550D-4599-9917-EEB4820A8B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87BC6343-550D-4599-9917-EEB4820A8B82}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {031D06E3-AA16-4A5F-B908-B5B595C86FBA}
+	EndGlobalSection
+EndGlobal
