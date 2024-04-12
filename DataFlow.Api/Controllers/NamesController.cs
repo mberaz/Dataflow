@@ -16,7 +16,7 @@ namespace DataFlow.Api.Controllers
 
 
         [HttpPost("{name}")]
-        public async Task<string> Create(string name)
+        public async Task<int> Create(string name)
         {
             return await _namesProcessor.ProcessName(name);
         }

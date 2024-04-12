@@ -4,13 +4,14 @@ namespace TPLDataFlowDemo
 {
     public interface INamesProcessor
     {
-        Task<string> ProcessName(string name);
+        Task<int> ProcessName(string name);
     }
     public class NamesProcessor : INamesProcessor
     {
-
         //https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/walkthrough-creating-a-dataflow-pipeline
         //https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library
+       
+        DataflowLinkOptions linkOptions = new() { PropagateCompletion = true };
         private readonly IValidatorsFactory _validatorsFactory;
         private readonly INamesDb _namesDb;
 
@@ -20,25 +21,22 @@ namespace TPLDataFlowDemo
             _namesDb = namesDb;
         }
 
-        public async Task<string> ProcessName(string name)
+        public async Task<int> ProcessName(string name)
         {
-            string _nameId = null;
-            var linkOptions = new DataflowLinkOptions { PropagateCompletion = true };
-
             var nameValidator = _validatorsFactory.CreateNameValidator();
-
             var blockedNamesValidator = _validatorsFactory.CreateBlockedNamesValidator();
             var errorMessageBlock = CreateSendErrorMessageBlock();
-            var saveNameBlock = new TransformBlock<(string name, bool isValid), string>(async input =>
+            var saveNameBlock = new TransformBlock<(string name, bool isValid),
+                                                    (string name, int nameId)>(async input =>
             {
                 await _namesDb.SaveName(input.name);
-                return input.name;
+                return (input.name, new Random().Next(100, 99999));
             });
 
-            var emailOnSaveBlock = new ActionBlock<string>(input =>
+            var emailOnSaveBlock = new TransformBlock<(string name, int nameId), int>(input =>
             {
-                Console.WriteLine($"The name {input} was saved");
-                _nameId = Guid.NewGuid().ToString();
+                Console.WriteLine($"The name {input.name} was saved");
+                return input.nameId;
             });
 
             //nameValidator.LinkTo(blockedNamesValidator, linkOptions,
@@ -55,12 +53,9 @@ namespace TPLDataFlowDemo
 
             saveNameBlock.LinkTo(emailOnSaveBlock, linkOptions);
 
-
             nameValidator.Post(name);
             nameValidator.Complete();
-            await emailOnSaveBlock.Completion;
-
-            return _nameId;
+            return await emailOnSaveBlock.ReceiveAsync();
         }
 
         private ActionBlock<(string name, bool isValid)> CreateSendErrorMessageBlock()
