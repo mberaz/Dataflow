@@ -2,7 +2,7 @@
 
 namespace TPLDataFlowDemo
 {
-    public class ValidatorsFactory : IValidatorFactory
+    public class ValidatorsFactory : IValidatorsFactory
     {
         private readonly IBlockedNameService _blockedNameService;
 
@@ -22,7 +22,7 @@ namespace TPLDataFlowDemo
             return new TransformBlock<(string name, bool isValid), (string name, bool isValid)>(async input =>
             {
                 var (isBlocked, _) = await _blockedNameService.IsBlocked(input.name);
-                return (input.name, isBlocked);
+                return (input.name, !isBlocked);
             });
         }
     }

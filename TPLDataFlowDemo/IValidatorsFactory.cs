@@ -2,7 +2,7 @@
 
 namespace TPLDataFlowDemo;
 
-public interface IValidatorFactory
+public interface IValidatorsFactory
 {
     TransformBlock<string, (string name, bool isValid)> CreateNameValidator();
 
