@@ -55,6 +55,16 @@ namespace TPLDataFlowDemo
 
             nameValidator.Post(name);
             nameValidator.Complete();
+
+            try
+            {
+                errorMessageBlock.Completion.Wait();
+            }
+            catch(AggregateException ex)
+            {
+                throw new Exception(ex.InnerException.Message);
+            }
+
             return await emailOnSaveBlock.ReceiveAsync();
         }
 
@@ -64,6 +74,7 @@ namespace TPLDataFlowDemo
               {
                   //send an email in real-life
                   Console.WriteLine($"The name {input.name} is not valid!");
+                  throw new Exception($"The name {input.name} is not valid!");
               });
         }
 
