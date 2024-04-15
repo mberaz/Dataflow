@@ -15,6 +15,7 @@ namespace NamesProcessor.Tests
         public void TestInitialize()
         {
             _blockedNameService = A.Fake<IBlockedNameService>();
+            A.CallTo(() => _blockedNameService.IsBlocked("blocked")).Returns((true, "blocked"));
             _validatorsFactory = new ValidatorsFactory(_blockedNameService);
             _namesDb = A.Fake<INamesDb>();
             _namesProcessor = new TPLDataFlowDemo.NamesProcessor(_validatorsFactory, _namesDb);
@@ -37,6 +38,23 @@ namespace NamesProcessor.Tests
             var name = "";
             A.CallTo(() => _blockedNameService.IsBlocked(name)).Returns((false, null));
 
+            try
+            {
+                await _namesProcessor.ProcessName(name);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual(e.Message, $"The name {name} is not valid!");
+            }
+            
+            A.CallTo(() => _namesDb.SaveName(name)).MustNotHaveHappened();
+        }
+
+        [TestMethod]
+        public async Task ProcessName_blockedName()
+        {
+            var name = "blocked";
+           
             try
             {
                 await _namesProcessor.ProcessName(name);

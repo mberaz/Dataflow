@@ -10,7 +10,7 @@ namespace TPLDataFlowDemo
     {
         //https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/walkthrough-creating-a-dataflow-pipeline
         //https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library
-       
+
         DataflowLinkOptions linkOptions = new() { PropagateCompletion = true };
         private readonly IValidatorsFactory _validatorsFactory;
         private readonly INamesDb _namesDb;
@@ -38,15 +38,8 @@ namespace TPLDataFlowDemo
                 Console.WriteLine($"The name {input.name} was saved");
                 return input.nameId;
             });
-
-            //nameValidator.LinkTo(blockedNamesValidator, linkOptions,
-            //                                            predicate: result => result.isValid);
-
-            //nameValidator.LinkTo(errorMessageBlock, linkOptions,
-            //    predicate: result => !result.isValid);
-
-            nameValidator.LinkWithPredicate(linkOptions, blockedNamesValidator,
-                errorMessageBlock, result => result.isValid);
+ 
+            nameValidator.LinkTo(blockedNamesValidator, linkOptions);
 
             blockedNamesValidator.LinkWithPredicate(linkOptions, saveNameBlock,
                 errorMessageBlock, result => result.isValid);
@@ -58,9 +51,10 @@ namespace TPLDataFlowDemo
 
             try
             {
+                blockedNamesValidator.Completion.Wait();
                 errorMessageBlock.Completion.Wait();
             }
-            catch(AggregateException ex)
+            catch (AggregateException ex)
             {
                 throw new Exception(ex.InnerException.Message);
             }

@@ -21,8 +21,13 @@ namespace TPLDataFlowDemo
         {
             return new TransformBlock<(string name, bool isValid), (string name, bool isValid)>(async input =>
             {
-                var (isBlocked, _) = await _blockedNameService.IsBlocked(input.name);
-                return (input.name, !isBlocked);
+                if (input.isValid)
+                {
+                    var (isBlocked, _) = await _blockedNameService.IsBlocked(input.name);
+                    return (input.name, !isBlocked);
+                }
+
+                return input;
             });
         }
     }
